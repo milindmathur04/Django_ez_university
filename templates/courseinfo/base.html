@@ -21,22 +21,22 @@
         <nav>
             <ul>
                 <li>
-                    <a href="/instructor">Instructors</a>
+                    <a href="{% url 'courseinfo_instructor_list_urlpattern' %}">Instructors</a>
                 </li>
                 <li>
-                    <a href="/section">Sections</a>
+                    <a href="{% url 'courseinfo_section_list_urlpattern' %}">Sections</a>
                 </li>
                 <li>
-                    <a href="/course">Courses</a>
+                    <a href="{% url 'courseinfo_course_list_urlpattern' %}">Courses</a>
                 </li>
                 <li>
-                    <a href="/semester">Semester</a>
+                    <a href="{% url 'courseinfo_semester_list_urlpattern' %}">Semester</a>
                 </li>
                 <li>
-                    <a href="/student">Students</a>
+                    <a href="{% url 'courseinfo_student_list_urlpattern' %}">Students</a>
                 </li>
                 <li>
-                    <a href="/registration">Registrations</a>
+                    <a href="{% url 'courseinfo_registration_list_urlpattern' %}">Registrations</a>
                 </li>
             </ul>
         </nav>
