@@ -10,7 +10,10 @@ class Semester(models.Model):
         return '%s' % self.semester_name
 
     def get_absolute_url(self):
-        return reverse('courseinfo_semester_detail_urlpattern',kwargs={'pk': self.pk})
+        return reverse('courseinfo_semester_detail_urlpattern', kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse('courseinfo_semester_update_urlpattern', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['semester_name']
@@ -25,7 +28,10 @@ class Course(models.Model):
         return '%s - %s' % (self.course_number, self.course_name)
 
     def get_absolute_url(self):
-        return reverse('courseinfo_course_detail_urlpattern',kwargs={'pk': self.pk})
+        return reverse('courseinfo_course_detail_urlpattern', kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse('courseinfo_course_update_urlpattern', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['course_number', 'course_name']
@@ -41,7 +47,10 @@ class Instructor(models.Model):
         return '%s, %s' % (self.last_name, self.first_name)
 
     def get_absolute_url(self):
-        return reverse('courseinfo_instructor_detail_urlpattern',kwargs={'pk': self.pk})
+        return reverse('courseinfo_instructor_detail_urlpattern', kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse('courseinfo_instructor_update_urlpattern', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['last_name', 'first_name']
@@ -63,7 +72,10 @@ class Student(models.Model):
         return result
 
     def get_absolute_url(self):
-        return reverse('courseinfo_student_detail_urlpattern',kwargs={'pk': self.pk})
+        return reverse('courseinfo_student_detail_urlpattern', kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse('courseinfo_student_update_urlpattern', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['last_name', 'first_name', 'nickname']
@@ -81,10 +93,14 @@ class Section(models.Model):
         return '%s - %s (%s)' % (self.course.course_number, self.section_name, self.semester.semester_name)
 
     def get_absolute_url(self):
-        return reverse('courseinfo_section_detail_urlpattern',kwargs={'pk': self.pk})
+        return reverse('courseinfo_section_detail_urlpattern', kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse('courseinfo_section_update_urlpattern', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['course__course_number', 'section_name', 'semester__semester_name']
+        unique_together = (('section_name', 'semester', 'course'),)
 
 
 class Registration(models.Model):
@@ -96,7 +112,10 @@ class Registration(models.Model):
         return '%s / %s' % (self.section, self.student)
 
     def get_absolute_url(self):
-        return reverse('courseinfo_registration_detail_urlpattern',kwargs={'pk': self.pk})
+        return reverse('courseinfo_registration_detail_urlpattern', kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse('courseinfo_registration_update_urlpattern', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['section', 'student']
