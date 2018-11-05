@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 
@@ -7,11 +8,49 @@ from courseinfo.forms import InstructorForm, SectionForm, SemesterForm, StudentF
 
 
 class InstructorList(View):
+    page_kwarg = 'page'
+    paginate_by = 25;
+    template_name = 'courseinfo/instructor_list.html'
+
     def get(self, request):
+        instructors = Instructor.objects.all()
+        paginator = Paginator(
+            instructors,
+            self.paginate_by
+        )
+        page_number = request.GET.get(
+            self.page_kwarg
+        )
+        try:
+            page = paginator.page(page_number)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+        if page.has_previous():
+            prev_url = "?{pkw}={n}".format(
+                pkw=self.page_kwarg,
+                n=page.previous_page_number()
+            )
+        else:
+            prev_url = None
+        if page.has_next():
+            next_url = "?{pkw}={n}".format(
+                pkw=self.page_kwarg,
+                n=page.next_page_number()
+            )
+        else:
+            next_url = None
+        context = {
+            'is_paginated':
+                page.has_other_pages(),
+            'next_page_url': next_url,
+            'paginator': paginator,
+            'previous_page_url': prev_url,
+            'instructor_list': page,
+        }
         return render(
-            request,
-            'courseinfo/instructor_list.html',
-            {'instructor_list': Instructor.objects.all()}
+            request, self.template_name, context
         )
 
 
@@ -79,14 +118,14 @@ class InstructorDelete(View):
             return render(
                 request,
                 'courseinfo/instructor_refuse_delete.html',
-                {'instructor' : instructor,
-                 'sections': sections,}
+                {'instructor': instructor,
+                 'sections': sections, }
             )
         else:
             return render(
                 request,
                 'courseinfo/instructor_confirm_delete.html',
-                {'insturctor':instructor}
+                {'insturctor': instructor}
             )
 
     def get_object(self, pk):
@@ -159,7 +198,7 @@ class SectionUpdate(View):
 
     def post(self, request, pk):
         section = self.get_object(pk)
-        bound_form=self.form_class(
+        bound_form = self.form_class(
             request.POST, instance=section
         )
         if bound_form.is_valid():
@@ -184,7 +223,7 @@ class SectionDelete(View):
                 request,
                 'courseinfo/section_refuse_delete.html',
                 {'section': section,
-                 'registrations': registrations,}
+                 'registrations': registrations, }
             )
         else:
             return render(
@@ -301,11 +340,49 @@ class SemesterDelete(View):
 
 
 class StudentList(View):
+    page_kwarg = 'page'
+    paginate_by = 25;
+    template_name = 'courseinfo/student_list.html'
+
     def get(self, request):
+        students = Student.objects.all()
+        paginator = Paginator(
+            students,
+            self.paginate_by
+        )
+        page_number = request.GET.get(
+            self.page_kwarg
+        )
+        try:
+            page = paginator.page(page_number)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+        if page.has_previous():
+            prev_url = "?{pkw}={n}".format(
+                pkw=self.page_kwarg,
+                n=page.previous_page_number()
+            )
+        else:
+            prev_url = None
+        if page.has_next():
+            next_url = "?{pkw}={n}".format(
+                pkw=self.page_kwarg,
+                n=page.next_page_number()
+            )
+        else:
+            next_url = None
+        context = {
+            'is_paginated':
+                page.has_other_pages(),
+            'next_page_url': next_url,
+            'paginator': paginator,
+            'previous_page_url': prev_url,
+            'student_list': page,
+        }
         return render(
-            request,
-            'courseinfo/student_list.html',
-            {'student_list': Student.objects.all()}
+            request, self.template_name, context
         )
 
 
@@ -374,7 +451,7 @@ class StudentDelete(View):
                 request,
                 'courseinfo/student_refuse_delete.html',
                 {'student': student,
-                 'registrations': registrations,}
+                 'registrations': registrations, }
             )
         else:
             return render(
@@ -405,7 +482,7 @@ class CourseList(View):
 
 
 class CourseDetail(View):
-    def get(self,request, pk):
+    def get(self, request, pk):
         course = get_object_or_404(
             Course,
             pk=pk
